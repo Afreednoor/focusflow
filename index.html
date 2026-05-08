@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusFlow — Turn Chaos Into Clarity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Particle Canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen">
+    <div class="loader-content">
+      <div class="loader-logo">
+        <span class="loader-icon">⚡</span>
+        <span class="loader-text">FocusFlow</span>
+      </div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar"></div>
+      </div>
+      <p class="loader-sub">Initializing your focus session…</p>
+    </div>
+  </div>
+
+  <!-- App Shell -->
+  <div class="app-shell" id="appShell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <span class="brand-icon">⚡</span>
+          <span class="brand-name">FocusFlow</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#hero" class="nav-item active" data-section="hero">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="#breakdown" class="nav-item" data-section="breakdown">
+          <span class="nav-icon">🧩</span>
+          <span class="nav-label">Task Breakdown</span>
+        </a>
+        <a href="#timer" class="nav-item" data-section="timer">
+          <span class="nav-icon">⏱</span>
+          <span class="nav-label">Focus Timer</span>
+        </a>
+        <a href="#motivation" class="nav-item" data-section="motivation">
+          <span class="nav-icon">✨</span>
+          <span class="nav-label">Motivation</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="api-status" id="apiStatus">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-label" id="statusLabel">Demo Mode</span>
+        </div>
+        <button class="settings-btn" id="settingsBtn">
+          <span>⚙</span> Settings
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Hero Section -->
+      <section class="section hero-section" id="hero">
+        <div class="hero-inner">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            AI-Powered Focus Assistant
+          </div>
+          <h1 class="hero-title">
+            Turn <span class="gradient-text">overwhelming</span><br />
+            tasks into small<br />
+            <span class="gradient-text">achievable steps.</span>
+          </h1>
+          <p class="hero-sub">
+            Designed for ADHD, neurodivergent, and overwhelmed minds.<br />
+            Let AI do the heavy thinking — you just take the next step.
+          </p>
+
+          <!-- Task Input -->
+          <div class="input-container">
+            <div class="input-glow"></div>
+            <textarea
+              id="taskInput"
+              class="task-input"
+              placeholder="What's overwhelming you right now?&#10;e.g. &quot;Build my portfolio&quot; or &quot;Study for exams&quot;"
+              rows="3"
+              maxlength="500"
+            ></textarea>
+            <div class="input-footer">
+              <span class="char-count"><span id="charCount">0</span>/500</span>
+              <button class="cta-btn" id="breakdownBtn">
+                <span class="btn-text">Break It Down</span>
+                <span class="btn-icon">→</span>
+                <span class="btn-loader" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Prompts -->
+          <div class="quick-prompts">
+            <span class="prompt-label">Try:</span>
+            <button class="prompt-chip" data-prompt="Build my personal portfolio website">Build a portfolio</button>
+            <button class="prompt-chip" data-prompt="Study for upcoming final exams">Study for exams</button>
+            <button class="prompt-chip" data-prompt="Clean and organize my room">Clean my room</button>
+            <button class="prompt-chip" data-prompt="Launch my freelance business">Start freelancing</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Task Breakdown Section -->
+      <section class="section breakdown-section" id="breakdown">
+        <div class="section-header">
+          <h2 class="section-title">Your Action Plan</h2>
+          <p class="section-sub">AI-generated steps tailored for your task</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">🧠</div>
+          <p class="empty-text">Enter a task above to generate your personalized action plan.</p>
+        </div>
+
+        <!-- Task Result Panel -->
+        <div class="task-result" id="taskResult" style="display:none;">
+          <div class="result-header">
+            <div class="result-task-label">
+              <span class="result-icon">📋</span>
+              <span id="resultTaskName" class="result-task-name"></span>
+            </div>
+            <div class="result-actions">
+              <button class="icon-btn" id="copyBtn" title="Copy all steps">📋 Copy</button>
+              <button class="icon-btn" id="clearBtn" title="Clear">✕ Clear</button>
+            </div>
+          </div>
+          <div id="stepsContainer" class="steps-container"></div>
+          <div class="result-footer">
+            <span class="ai-badge">✦ Generated by AI</span>
+            <button class="regenerate-btn" id="regenerateBtn">↺ Regenerate</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Timer + Motivation Row -->
+      <div class="widgets-row">
+
+        <!-- Pomodoro Timer -->
+        <section class="section timer-section" id="timer">
+          <div class="section-header">
+            <h2 class="section-title">Focus Timer</h2>
+            <p class="section-sub">Pomodoro-style deep work sessions</p>
+          </div>
+
+          <div class="timer-card">
+            <div class="timer-mode-tabs">
+              <button class="mode-tab active" data-mode="focus">Focus</button>
+              <button class="mode-tab" data-mode="short">Short Break</button>
+              <button class="mode-tab" data-mode="long">Long Break</button>
+            </div>
+
+            <div class="timer-circle-wrap">
+              <svg class="timer-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6c63ff" />
+                    <stop offset="100%" stop-color="#00d4ff" />
+                  </linearGradient>
+                </defs>
+                <circle class="timer-track" cx="110" cy="110" r="96" />
+                <circle class="timer-progress" id="timerProgress" cx="110" cy="110" r="96" />
+              </svg>
+              <div class="timer-display">
+                <span class="timer-time" id="timerDisplay">25:00</span>
+                <span class="timer-label" id="timerModeLabel">Focus Session</span>
+              </div>
+            </div>
+
+            <div class="timer-controls">
+              <button class="timer-btn secondary" id="resetBtn">↺</button>
+              <button class="timer-btn primary" id="startBtn">▶</button>
+              <button class="timer-btn secondary" id="skipBtn">⏭</button>
+            </div>
+
+            <div class="session-tracker">
+              <span class="session-label">Sessions today:</span>
+              <div class="session-dots" id="sessionDots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Motivation Section -->
+        <section class="section motivation-section" id="motivation">
+          <div class="section-header">
+            <h2 class="section-title">Daily Spark</h2>
+            <p class="section-sub">Fuel for your focus journey</p>
+          </div>
+
+          <div class="motivation-card" id="motivationCard">
+            <div class="quote-icon">"</div>
+            <p class="quote-text" id="quoteText"></p>
+            <div class="quote-author" id="quoteAuthor"></div>
+            <button class="next-quote-btn" id="nextQuoteBtn">Next Quote →</button>
+          </div>
+
+          <div class="streak-card">
+            <div class="streak-info">
+              <span class="streak-fire">🔥</span>
+              <div>
+                <div class="streak-count" id="streakCount">1</div>
+                <div class="streak-label">Day Streak</div>
+              </div>
+            </div>
+            <div class="streak-bar-wrap">
+              <div class="streak-bar">
+                <div class="streak-fill" style="width: 30%"></div>
+              </div>
+              <span class="streak-next">Next milestone: 7 days</span>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- end widgets-row -->
+
+    </main><!-- end main-content -->
+  </div><!-- end app-shell -->
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label class="setting-label">Gemini API Key</label>
+          <p class="setting-hint">Add your key for real AI responses. Leave blank for Demo Mode.</p>
+          <input type="password" class="setting-input" id="apiKeyInput" placeholder="AIza…" />
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Focus Duration (minutes)</label>
+          <input type="number" class="setting-input" id="focusDuration" value="25" min="1" max="90" />
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Short Break (minutes)</label>
+          <input type="number" class="setting-input" id="shortBreak" value="5" min="1" max="30" />
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Long Break (minutes)</label>
+          <input type="number" class="setting-input" id="longBreak" value="15" min="1" max="60" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save-btn" id="saveSettings">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
