@@ -1,3 +1,4 @@
+Updated project documentation.
  ADHD Focus Assistant
 
 An AI-powered productivity assistant designed to help ADHD users stay focused, organized, and productive.
