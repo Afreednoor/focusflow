@@ -1,5 +1,7 @@
 Updated project documentation.
  ADHD Focus Assistant
+ Live Demo
+ (https://roaring-marigold-94d7ae.netlify.app/)
 
 An AI-powered productivity assistant designed to help ADHD users stay focused, organized, and productive.
 
